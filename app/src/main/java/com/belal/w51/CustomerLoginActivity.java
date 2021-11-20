@@ -1,10 +1,9 @@
-package com.belal.mohamedkober;
+package com.belal.w51;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -20,19 +19,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class DriverLoginActivity extends AppCompatActivity {
-
+public class CustomerLoginActivity extends AppCompatActivity {
     private EditText Email, Password;
     private Button logIn, register;
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_driver_login);
+        setContentView(R.layout.activity_customer_login);
 
         mAuth = FirebaseAuth.getInstance();
         authStateListener = new FirebaseAuth.AuthStateListener() {
@@ -41,7 +37,7 @@ public class DriverLoginActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user!=null)
                 {
-                    Intent intent = new Intent(DriverLoginActivity.this, DriverMap.class);
+                    Intent intent = new Intent(CustomerLoginActivity.this, CustomerMap.class);
                     startActivity(intent);
                     finish();
                 }
@@ -59,7 +55,7 @@ public class DriverLoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String mail = Email.getText().toString();
                 final String password = Password.getText().toString();
-                mAuth.createUserWithEmailAndPassword(mail, password).addOnCompleteListener(DriverLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                mAuth.createUserWithEmailAndPassword(mail, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful())
@@ -67,17 +63,18 @@ public class DriverLoginActivity extends AppCompatActivity {
                             task.addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(DriverLoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CustomerLoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }
-                        else
+
+                        }else
                         {
                             String user_id = mAuth.getCurrentUser().getUid();
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(user_id);
+                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id);
                             current_user_db.setValue(true);
                         }
                     }
+
                 });
             }
         });
@@ -87,7 +84,7 @@ public class DriverLoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String mail = Email.getText().toString();
                 final String password = Password.getText().toString();
-                mAuth.signInWithEmailAndPassword(mail, password).addOnCompleteListener(DriverLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                mAuth.signInWithEmailAndPassword(mail, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(!task.isSuccessful())
@@ -95,7 +92,7 @@ public class DriverLoginActivity extends AppCompatActivity {
                             task.addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(DriverLoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CustomerLoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
                         }
