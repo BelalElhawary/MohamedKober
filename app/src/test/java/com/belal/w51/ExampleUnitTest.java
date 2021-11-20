@@ -1,4 +1,4 @@
-package com.belal.mohamedkober;
+package com.belal.w51;
 
 import org.junit.Test;
 
