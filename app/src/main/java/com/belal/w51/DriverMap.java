@@ -12,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,7 +54,7 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
     Location mLastLocation;
     LocationRequest mLocationRequest;
 
-    private Button mLogout;
+    private ImageButton mLogout;
 
     private String customerId = "";
 
@@ -83,7 +84,7 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mLogout = (Button) findViewById(R.id.btn_logout);
+        mLogout = (ImageButton) findViewById(R.id.btn_logout);
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

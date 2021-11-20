@@ -5,34 +5,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DriverLoginActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/ground">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Driver login"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        android:fontFamily="@font/halva"
+        android:textStyle="bold"
+        android:layout_margin="20dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="When you complete login your position will update every 500m movement whenever you stop your location will set to last check point customer name and image are protected by law and you cant share this information"
+        android:textColor="#6B6B6B"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:layout_margin="30dp"/>
 
     <EditText
         android:id="@+id/edt_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="E-mail"
-        android:inputType="textEmailAddress"/>
+        android:textColor="@color/white"
+        android:textColorHint="#6B6B6B"
+        android:inputType="textEmailAddress"
+        android:background="@null"
+        android:padding="20dp"/>
 
     <EditText
         android:id="@+id/edt_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword"/>
+        android:textColor="@color/white"
+        android:textColorHint="#6B6B6B"
+        android:inputType="textPassword"
+        android:background="@null"
+        android:padding="20dp"
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:id="@+id/btn_login"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="LogIn"/>
+        android:text="LogIn"
+        android:background="@drawable/modern_button3"
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Register"/>
+        android:text="Register"
+        android:background="@drawable/modern_button3"/>
 
 </LinearLayout>

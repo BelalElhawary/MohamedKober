@@ -38,57 +38,59 @@
         android:id="@+id/card_customer_request_ui"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="25dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/modern_line"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="25dp">
 
         <Button
             android:id="@+id/btn_request_ride"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:text="Request Ride"
-            android:textSize="24sp"
-            android:textColor="@color/ground"
-            android:background="@drawable/modern_button3"
             android:layout_gravity="bottom"
             android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"/>
+            android:layout_marginRight="25dp"
+            android:background="@drawable/modern_button3"
+            android:text="Request Ride"
+            android:textColor="@color/ground"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/edt_stats"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="20dp"
             android:text="I AM"
             android:textColor="@color/white"
-            android:textSize="24sp"
-            android:layout_margin="20dp"/>
+            android:textSize="24sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_margin="20dp">
+            android:weightSum="2">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="I AM"
-                android:textColor="@color/white"
-                android:textSize="24sp"
                 android:layout_weight="1"
-                android:textAlignment="center"/>
+                android:text="I AM"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="I AM"
-                android:textColor="@color/white"
-                android:textSize="24sp"
                 android:layout_weight="1"
-                android:textAlignment="center"/>
+                android:text="I AM"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="24sp" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

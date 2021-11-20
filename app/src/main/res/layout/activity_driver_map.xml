@@ -5,11 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DriverMap" >
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Log Out"/>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -22,8 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="horizontal"
-        android:background="@color/white"
-        android:visibility="gone">
+        android:background="@drawable/modern_line"
+        android:visibility="visible">
         <ImageView
             android:layout_width="100sp"
             android:layout_height="100sp"
@@ -35,18 +31,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingLeft="40sp">
+            android:paddingLeft="20sp">
             <TextView
                 android:id="@+id/edt_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="10sp"
+                android:text="Username"
+                android:textColor="@color/white"
                 android:paddingTop="20sp"/>
             <TextView
                 android:id="@+id/edt_phone_number"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="User phone number"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btn_logout"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_baseline_exit_to_app_24"
+        android:background="@drawable/modern_button3"
+        android:layout_margin="10dp"/>
+
 </FrameLayout>

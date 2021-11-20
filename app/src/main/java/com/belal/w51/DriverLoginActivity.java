@@ -49,7 +49,7 @@ public class DriverLoginActivity extends AppCompatActivity {
 
         Email = (EditText) findViewById(R.id.edt_email);
         Password = (EditText) findViewById(R.id.edt_password);
-        logIn = (Button) findViewById(R.id.btn_login);
+        logIn = (Button) findViewById(R.id.btn_login); 
         register = (Button) findViewById(R.id.btn_register);
 
 
