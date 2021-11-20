@@ -368,5 +368,40 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onStop() {
         super.onStop();
+        RemoveRequest();
+    }
+
+    void RemoveRequest()
+    {
+        if(requestBool)
+        {
+            requestBool = false;
+            geoQuery.removeAllListeners();
+            if(driverLocationRefListener != null)
+            {driverLocationRef.removeEventListener(driverLocationRefListener);}
+
+            if(driverFoundId != null)
+            {
+                DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundId);
+                driverRef.setValue(true);
+                driverFoundId = null;
+            }
+            driverFound = false;
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("CustomerRequest");
+
+            GeoFire geoFire = new GeoFire(ref);
+            geoFire.removeLocation(userId);
+            if(pickupMarker != null)
+            {
+                pickupMarker.remove();
+            }
+
+            if(mDriverMarker != null)
+            {
+                mDriverMarker.remove();
+            }
+            mRequest.setText("Request Ride");
+        }
     }
 }
