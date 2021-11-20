@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CustomerSettingsActivity"
+    android:orientation="vertical"
+    android:padding="20sp"
+    android:background="@color/ground">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/img_profileImage"
+            android:layout_width="100sp"
+            android:layout_height="100sp"
+            android:background="@drawable/ic_baseline_profile_24"
+            android:scaleType="centerCrop"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_drive_file_rename_outline_24"
+            android:layout_gravity="right"/>
+    </FrameLayout>
+
+
+    <EditText
+        android:id="@+id/edt_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:background="@null"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        android:textColorHint="@color/acc"
+        android:textColor="@color/white"
+        android:drawableLeft="@drawable/ic_baseline_drive_file_rename_outline_24"/>
+
+    <EditText
+        android:id="@+id/edt_phone_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:background="@null"
+        android:hint="Phone number"
+        android:textColorHint="@color/acc"
+        android:textColor="@color/white"
+        android:inputType="phone"
+        android:drawableLeft="@drawable/ic_baseline_local_phone_24"/>
+    <Button
+        android:id="@+id/btn_apply_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Change Settings"
+        android:padding="20dp"/>
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:padding="20dp"/>
+
+
+</LinearLayout>

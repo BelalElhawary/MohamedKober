@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DriverLoginActivity"
+    android:orientation="vertical"
+    android:background="@color/ground">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="LOG IN"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        android:fontFamily="@font/halva"
+        android:textStyle="bold"
+        android:layout_margin="20dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
+        <EditText
+            android:id="@+id/edt_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="E-mail"
+            android:textColor="@color/white"
+            android:textColorHint="#6B6B6B"
+            android:inputType="textEmailAddress"
+            android:background="@null"
+            android:padding="20dp"/>
+
+        <EditText
+            android:id="@+id/edt_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:textColor="@color/white"
+            android:textColorHint="#6B6B6B"
+            android:inputType="textPassword"
+            android:background="@null"
+            android:padding="20dp"/>
+    </LinearLayout>
+
+
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="LOG IN"
+        android:background="@drawable/modern_button"
+        android:textColor="@color/main"
+        android:textSize="24sp"
+        android:fontFamily="@font/halva"
+        android:textStyle="bold"
+        android:paddingStart="10dp"
+        android:paddingEnd="12dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="15dp"
+        android:layout_gravity="center">
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="1dp"
+            android:background="@color/white"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="OR"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/halva"
+            android:textStyle="bold"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"/>
+
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="1dp"
+            android:background="@color/white"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:text="Register"
+        android:background="@drawable/modern_button2"
+        android:textColor="@color/acc"
+        android:textSize="24sp"
+        android:fontFamily="@font/halva"
+        android:textStyle="bold"
+        android:paddingStart="10dp"
+        android:paddingEnd="12dp" />
+
+</LinearLayout>
