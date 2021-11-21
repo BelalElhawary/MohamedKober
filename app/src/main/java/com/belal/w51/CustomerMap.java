@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.belal.w51.Tools.ImageConverter;
@@ -42,6 +43,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -54,12 +57,15 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
 
     private Button mRequest;
     private ImageButton mLogout, mSettings;
+    private TextView mStatus, mLocation, mTime;
 
     private LatLng pickupLocation;
 
     private Boolean requestBool = false;
 
     private Marker pickupMarker;
+
+    private SupportMapFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,13 +77,15 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         mSettings = (ImageButton)findViewById(R.id.btn_settings);
         mLogout = (ImageButton)findViewById(R.id.btn_logout);
         mRequest = (Button)findViewById(R.id.btn_request_ride);
+        mStatus = (TextView) findViewById(R.id.txt_stats);
+        mLocation = (TextView) findViewById(R.id.txt_location);
 
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,33 +103,7 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 if(requestBool)
                 {
-                    requestBool = false;
-                    geoQuery.removeAllListeners();
-                    if(driverLocationRefListener != null)
-                    {driverLocationRef.removeEventListener(driverLocationRefListener);}
-
-                    if(driverFoundId != null)
-                    {
-                        DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundId);
-                        driverRef.setValue(true);
-                        driverFoundId = null;
-                    }
-                    driverFound = false;
-                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("CustomerRequest");
-
-                    GeoFire geoFire = new GeoFire(ref);
-                    geoFire.removeLocation(userId);
-                    if(pickupMarker != null)
-                    {
-                        pickupMarker.remove();
-                    }
-
-                    if(mDriverMarker != null)
-                    {
-                        mDriverMarker.remove();
-                    }
-                    mRequest.setText("Request Ride");
+                    RemoveRequest();
                 }else
                 {
                     requestBool = true;
@@ -133,7 +115,8 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                     pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
                     pickupMarker = mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup Location").icon(BitmapDescriptorFactory.fromBitmap(ImageConverter.getBitmap(R.drawable.ic_baseline_location_on_24, getBaseContext()))));
 
-                    mRequest.setText("Getting your driver...");
+                    mRequest.setText("Cancel Request");
+                    mStatus.setText("Getting your driver...");
 
                     getClosestDriver();
                 }
@@ -174,7 +157,7 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                     HashMap map = new HashMap();
                     map.put("CustomerRideId", customerId);
                     driverRef.updateChildren(map);
-                    mRequest.setText("Looking for driver location...");
+                    mStatus.setText("Looking for driver location...");
                     getDriverLocation();
 
                 }
@@ -224,7 +207,7 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                     List<Object> map = (List<Object>) snapshot.getValue();
                     double locationLat = 0;
                     double locationLng = 0;
-                    mRequest.setText("Driver Found");
+                    mStatus.setText("Driver Found");
                     if(map.get(0) != null){
                         locationLat = Double.parseDouble(map.get(0).toString());
                     }
@@ -248,11 +231,11 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                     loc1.distanceTo(loc2);
 
                     if(distance > 999)
-                        mRequest.setText("Driver found: " + String.valueOf((int)distance) + "KM Away");
+                        mLocation.setText(String.valueOf((int)distance) + "KM Away");
                     else if(distance < 999 && distance > 60)
-                        mRequest.setText("Driver found: " + String.valueOf((int)distance / 1000) + "M Away");
+                        mLocation.setText(String.valueOf((int)distance / 1000) + "M Away");
                     else
-                        mRequest.setText("Driver Arrive");
+                        mLocation.setText("Driver Arrive");
                     mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLanLng).title("your driver").icon(BitmapDescriptorFactory.fromBitmap(ImageConverter.getBitmap(R.drawable.ic_baseline_golf_car_pin_circle_24, getBaseContext()))));
                 }
             }
@@ -355,7 +338,7 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
             {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-
+                    mapFragment.getMapAsync(this);
                 }else{
                     Toast.makeText(getApplicationContext(), "Please provide the permission", Toast.LENGTH_LONG).show();
                 }
@@ -402,6 +385,8 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                 mDriverMarker.remove();
             }
             mRequest.setText("Request Ride");
+            mLocation.setText("0m away");
+            mStatus.setText("Request Stats");
         }
     }
 }

@@ -49,7 +49,6 @@ public class CustomerLoginActivity extends AppCompatActivity {
         logIn = (Button) findViewById(R.id.btn_login);
         register = (Button) findViewById(R.id.btn_register);
 
-
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

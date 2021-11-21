@@ -63,6 +63,8 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
     private LinearLayout mCustomerInfo;
     private ImageView mCustomerImage;
     private TextView mCustomerName, mCustomerPhone;
+
+    private SupportMapFragment mapFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +82,7 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
         mCustomerPhone = (TextView) findViewById(R.id.edt_phone_number);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -322,7 +324,7 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
             {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
                 {
-
+                    mapFragment.getMapAsync(this);
                 }else{
                     Toast.makeText(getApplicationContext(), "Please provide the permission", Toast.LENGTH_LONG).show();
                 }
