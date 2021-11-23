@@ -102,6 +102,19 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
         });
 
         getAssignedCustomer();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("CustomerRequest");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                UploadLocation(mLastLocation);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 
@@ -262,9 +275,6 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
 
     private void UploadLocation(Location location)
     {
-
-
-
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DatabaseReference refAvailable = FirebaseDatabase.getInstance().getReference("DriversAvailable");

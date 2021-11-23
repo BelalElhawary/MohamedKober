@@ -8,7 +8,9 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.belal.w51.Tools.DirectionParser;
 import com.belal.w51.Tools.ImageConverter;
 import com.belal.w51.databinding.ActivityDriverMapBinding;
 import com.firebase.geofire.GeoFire;
@@ -37,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -44,11 +48,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -202,55 +219,10 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
     private Marker mDriverMarker;
     private DatabaseReference driverLocationRef;
     private ValueEventListener driverLocationRefListener;
+    private LatLng driverLanLng;
     private void getDriverLocation()
     {
         driverLocationRef = FirebaseDatabase.getInstance().getReference().child("DriversWorking").child(driverFoundId).child("l");
-        driverLocationRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                List<Object> map = (List<Object>) snapshot.getValue();
-                double locationLat = 0;
-                double locationLng = 0;
-                mStatus.setText("Driver Found");
-                if(map.get(0) != null){
-                    locationLat = Double.parseDouble(map.get(0).toString());
-                }
-                if(map.get(1) != null){
-                    locationLng = Double.parseDouble(map.get(1).toString());
-                }
-                LatLng driverLanLng = new LatLng(locationLat, locationLng);
-                if(mDriverMarker != null)
-                {
-                    mDriverMarker.remove();
-                }
-                Location loc1 = new Location("");
-                loc1.setLatitude(pickupLocation.latitude);
-                loc1.setLongitude(pickupLocation.longitude);
-
-                Location loc2 = new Location("");
-                loc2.setLatitude(driverLanLng.latitude);
-                loc2.setLongitude(driverLanLng.longitude);
-
-                OkHttpClient client = new OkHttpClient().newBuilder()
-                        .build();
-                Request request = new Request.Builder()
-                        .url("https://maps.googleapis.com/maps/api/distancematrix/json?\" +\"origin=\" + "+pickupLocation.latitude+" + \",\" + "+pickupLocation.longitude+" + \"&\" +\"destination=\" + "+driverLanLng.latitude+" + \",\" + "+driverLanLng.longitude+" +\"&sensor=false&units=metric&mode=driving\" + \"&\" + key=AIzaSyDI29z7NeiESdCg2AcWgccmcXe6T8i82B8")
-                        .method("GET", null)
-                        .build();
-                try {
-                    Response response = client.newCall(request).execute();
-                    Log.d("TEST GOOGLE MAP API DRIVER LOCATION +++++> ", response.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
         driverLocationRefListener = driverLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -266,7 +238,7 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                     if(map.get(1) != null){
                         locationLng = Double.parseDouble(map.get(1).toString());
                     }
-                    LatLng driverLanLng = new LatLng(locationLat, locationLng);
+                    driverLanLng = new LatLng(locationLat, locationLng);
                     if(mDriverMarker != null)
                     {
                         mDriverMarker.remove();
@@ -289,6 +261,7 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                     else
                         mLocation.setText("Driver Arrive");
                     mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLanLng).title("your driver").icon(BitmapDescriptorFactory.fromBitmap(ImageConverter.getBitmap(R.drawable.ic_baseline_golf_car_pin_circle_24, getBaseContext()))));
+                    new TaskDirectionRequest().execute(buildRequestUrl(pickupLocation, driverLanLng));
                 }
             }
 
@@ -299,6 +272,124 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
             }
         });
     }
+
+    //TEST-TEST-TEST
+    private String buildRequestUrl(LatLng origin, LatLng destination) {
+        String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
+        String strDestination = "destination=" + destination.latitude + "," + destination.longitude;
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+
+        String param = strOrigin + "&" + strDestination + "&" + sensor + "&" + mode;
+        String output = "json";
+        String APIKEY = getResources().getString(R.string.google_maps_key);
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key="+APIKEY;
+        Log.d("TEST GOOGLE MAP API DRIVER LOCATION ====> ", url);
+        return url;
+    }
+    private String requestDirection(String requestedUrl) {
+        String responseString = "";
+        InputStream inputStream = null;
+        HttpURLConnection httpURLConnection = null;
+        try {
+            URL url = new URL(requestedUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+
+            inputStream = httpURLConnection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            StringBuffer stringBuffer = new StringBuffer();
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+            responseString = stringBuffer.toString();
+            bufferedReader.close();
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        httpURLConnection.disconnect();
+        return responseString;
+    }
+    //Get JSON data from Google Direction
+    public class TaskDirectionRequest extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            String responseString = "";
+            try {
+                responseString = requestDirection(strings[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String responseString) {
+            super.onPostExecute(responseString);
+            //Json object parsing
+            TaskParseDirection parseResult = new TaskParseDirection();
+            parseResult.execute(responseString);
+        }
+    }
+    //Parse JSON Object from Google Direction API & display it on Map
+    public class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
+            List<List<HashMap<String, String>>> routes = null;
+            JSONObject jsonObject = null;
+
+            try {
+                jsonObject = new JSONObject(jsonString[0]);
+                DirectionParser parser = new DirectionParser();
+                routes = parser.parse(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
+            super.onPostExecute(lists);
+            ArrayList points = null;
+            PolylineOptions polylineOptions = null;
+
+            for (List<HashMap<String, String>> path : lists) {
+                points = new ArrayList();
+                polylineOptions = new PolylineOptions();
+
+                for (HashMap<String, String> point : path) {
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lon = Double.parseDouble(point.get("lng"));
+
+                    points.add(new LatLng(lat, lon));
+                }
+                polylineOptions.addAll(points);
+                polylineOptions.width(15f);
+                polylineOptions.color(Color.BLUE);
+                polylineOptions.geodesic(true);
+            }
+            if (polylineOptions != null) {
+                mMap.addPolyline(polylineOptions);
+            } else {
+                Toast.makeText(getApplicationContext(), "Direction not found", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    //TEST
 
 
 
@@ -346,8 +437,8 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(2000);
+        mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
