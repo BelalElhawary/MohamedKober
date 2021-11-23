@@ -163,7 +163,6 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
                     }
                     if(map.get("profileImageUrl") != null)
                     {
-
                         String mProfileImageUri = map.get("profileImageUrl").toString();
                         Glide.with(getApplication()).load(mProfileImageUri).into(mCustomerImage);
                     }
@@ -198,7 +197,6 @@ public class DriverMap extends FragmentActivity implements OnMapReadyCallback, G
                     }
                     LatLng driverLanLng = new LatLng(locationLat, locationLng);
                     pickUpMarker = mMap.addMarker(new MarkerOptions().position(driverLanLng).title("pickup location").icon(BitmapDescriptorFactory.fromBitmap(ImageConverter.getBitmap(R.drawable.ic_baseline_person_pin_circle_24, getBaseContext()))));
-
                     if(!customerId.equals(""))
                         UploadLocation(mLastLocation);
                 }

@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+
     private GoogleMap mMap;
     private ActivityDriverMapBinding binding;
     GoogleApiClient mGoogleApiClient;
@@ -151,7 +152,6 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                 {
                     driverFound = true;
                     driverFoundId = key;
-                    mRequest.setText(driverFoundId);
                     DatabaseReference driverRef = FirebaseDatabase.getInstance().getReference().child("Users").child("Driver").child(driverFoundId);
                     String customerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     HashMap map = new HashMap();
@@ -342,7 +342,6 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                 }else{
                     Toast.makeText(getApplicationContext(), "Please provide the permission", Toast.LENGTH_LONG).show();
                 }
-
                 break;
             }
         }
