@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -45,8 +46,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
@@ -199,6 +205,52 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
     private void getDriverLocation()
     {
         driverLocationRef = FirebaseDatabase.getInstance().getReference().child("DriversWorking").child(driverFoundId).child("l");
+        driverLocationRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                List<Object> map = (List<Object>) snapshot.getValue();
+                double locationLat = 0;
+                double locationLng = 0;
+                mStatus.setText("Driver Found");
+                if(map.get(0) != null){
+                    locationLat = Double.parseDouble(map.get(0).toString());
+                }
+                if(map.get(1) != null){
+                    locationLng = Double.parseDouble(map.get(1).toString());
+                }
+                LatLng driverLanLng = new LatLng(locationLat, locationLng);
+                if(mDriverMarker != null)
+                {
+                    mDriverMarker.remove();
+                }
+                Location loc1 = new Location("");
+                loc1.setLatitude(pickupLocation.latitude);
+                loc1.setLongitude(pickupLocation.longitude);
+
+                Location loc2 = new Location("");
+                loc2.setLatitude(driverLanLng.latitude);
+                loc2.setLongitude(driverLanLng.longitude);
+
+                OkHttpClient client = new OkHttpClient().newBuilder()
+                        .build();
+                Request request = new Request.Builder()
+                        .url("https://maps.googleapis.com/maps/api/distancematrix/json?\" +\"origin=\" + "+pickupLocation.latitude+" + \",\" + "+pickupLocation.longitude+" + \"&\" +\"destination=\" + "+driverLanLng.latitude+" + \",\" + "+driverLanLng.longitude+" +\"&sensor=false&units=metric&mode=driving\" + \"&\" + key=AIzaSyDI29z7NeiESdCg2AcWgccmcXe6T8i82B8")
+                        .method("GET", null)
+                        .build();
+                try {
+                    Response response = client.newCall(request).execute();
+                    Log.d("TEST GOOGLE MAP API DRIVER LOCATION +++++> ", response.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         driverLocationRefListener = driverLocationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -262,13 +314,7 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         buildGoogleApiClient();
