@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.belal.w51.Tools.DirectionParser;
 import com.belal.w51.Tools.ImageConverter;
-import com.belal.w51.databinding.ActivityDriverMapBinding;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -60,6 +59,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,13 +74,12 @@ import okhttp3.Response;
 public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private GoogleMap mMap;
-    private ActivityDriverMapBinding binding;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     LocationRequest mLocationRequest;
 
     private Button mRequest;
-    private ImageButton mLogout, mSettings;
+    private ImageButton mLogout, mSettings, mMall;
     private TextView mStatus, mLocation, mTime;
 
     private LatLng pickupLocation;
@@ -107,7 +106,10 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
 
         mSettings = (ImageButton)findViewById(R.id.btn_settings);
         mLogout = (ImageButton)findViewById(R.id.btn_logout);
+        mMall = (ImageButton) findViewById(R.id.btn_mall);
+
         mRequest = (Button)findViewById(R.id.btn_request_ride);
+
         mStatus = (TextView) findViewById(R.id.txt_stats);
         mLocation = (TextView) findViewById(R.id.txt_location);
 
@@ -151,6 +153,14 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CustomerMap.this, CustomerSettingsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        mMall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CustomerMap.this, MallActivity.class);
                 startActivity(intent);
             }
         });
@@ -255,9 +265,9 @@ public class CustomerMap extends AppCompatActivity implements OnMapReadyCallback
                     loc1.distanceTo(loc2);
 
                     if(distance > 999)
-                        mLocation.setText(String.valueOf((int)distance) + "KM Away");
+                        mLocation.setText(String.valueOf(new DecimalFormat("#.##").format( distance / 1000)) + "KM Away");
                     else if(distance < 999 && distance > 60)
-                        mLocation.setText(String.valueOf((int)distance / 1000) + "M Away");
+                        mLocation.setText(String.valueOf((int)distance) + "M Away");
                     else
                         mLocation.setText("Driver Arrive");
                     mDriverMarker = mMap.addMarker(new MarkerOptions().position(driverLanLng).title("your driver").icon(BitmapDescriptorFactory.fromBitmap(ImageConverter.getBitmap(R.drawable.ic_baseline_golf_car_pin_circle_24, getBaseContext()))));

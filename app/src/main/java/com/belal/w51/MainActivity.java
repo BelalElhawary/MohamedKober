@@ -9,12 +9,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.belal.w51.Tools.PicassoImageLoadingService;
+
+import ss.com.bannerslider.Slider;
+
 public class MainActivity extends AppCompatActivity {
     private Button customer, driver;
+    private PicassoImageLoadingService picassoImageLoadingService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         customer = (Button) findViewById(R.id.btn_customer);
         driver = (Button) findViewById(R.id.btn_driver);
 
