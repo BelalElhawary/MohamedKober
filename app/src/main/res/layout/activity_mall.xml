@@ -21,15 +21,37 @@
                 app:slider_interval="5000"
                 app:slider_loopSlides="true"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
-                android:text="In W51 Mall"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:fontFamily="@font/variable"/>
+                android:orientation="horizontal"
+                android:padding="15dp"
+                android:layout_gravity="center">
+                <ImageView
+                    android:layout_width="55dp"
+                    android:layout_height="2dp"
+                    android:background="@color/white"
+                    android:layout_gravity="center"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="IN MALL"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/halva"
+                    android:textStyle="bold"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"/>
+
+                <ImageView
+                    android:layout_width="55dp"
+                    android:layout_height="2dp"
+                    android:background="@color/white"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_stores"
@@ -39,11 +61,6 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:background="@drawable/delivery"
-                android:scaleType="fitStart"/>
 
         </LinearLayout>
     </ScrollView>
